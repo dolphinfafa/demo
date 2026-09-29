@@ -27,6 +27,7 @@
 .
 ├── BI-demo/
 │   ├── UI.png
+│   ├── logo.png
 │   ├── index.html
 │   ├── styles.css
 │   └── app.js
