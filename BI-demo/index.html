@@ -92,20 +92,23 @@
             </div>
             <div class="map-canvas">
               <div class="grid-floor"></div>
-              <svg class="china-map" viewBox="0 0 780 520" role="img" aria-label="全国业务覆盖示意图">
-                <defs>
-                  <linearGradient id="mapFill" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#173d61"/><stop offset="1" stop-color="#102239"/></linearGradient>
-                  <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-                </defs>
-                <path class="map-shadow" d="M118 122l54-25 64 10 35-32 83 9 46-43 92 34 80 9 38 55 74 32-18 48 30 39-37 34 7 55-78 13-39 43-76-21-52 28-61-24-75 9-27-43-69-5-18-57-55-28 19-53-22-43 49-38z"/>
-                <path class="map-shape" d="M118 105l54-25 64 10 35-32 83 9 46-43 92 34 80 9 38 55 74 32-18 48 30 39-37 34 7 55-78 13-39 43-76-21-52 28-61-24-75 9-27-43-69-5-18-57-55-28 19-53-22-43 49-38z"/>
-                <g class="map-lines"><path d="M172 80l61 95 69 32 73-57 72 44 76-44 74 98 69-47"/><path d="M136 208l95 11 27 94 92-35 52 92 51-101 86 33 51-70"/><path d="M201 359l57-46 80 81 64-24 72 21 49-68"/><path d="M271 58l31 149 48 71 50-128 47 44 6 75"/></g>
-              </svg>
-              <div class="city-marker marker-wh" data-city="武汉" data-value="362" style="--x:53%;--y:59%"><span></span><div><small>武汉</small><strong>362</strong><em>在管项目</em></div></div>
-              <div class="city-marker marker-hf" data-city="合肥" data-value="128" style="--x:67%;--y:45%"><span></span><div><small>合肥</small><strong>128</strong><em>在管项目</em></div></div>
-              <div class="city-marker marker-xn" data-city="咸宁" data-value="86" style="--x:58%;--y:69%"><span></span><div><small>咸宁</small><strong>86</strong><em>在管项目</em></div></div>
-              <div class="city-marker marker-cs" data-city="长沙" data-value="52" style="--x:49%;--y:78%"><span></span><div><small>长沙</small><strong>52</strong><em>在管项目</em></div></div>
+              <div class="map-image-wrap" aria-label="中国省级行政区业务覆盖地图">
+                <img class="china-map map-depth" src="https://simplemaps.com/static/svg/country/cn/admin1/cn.svg" alt="">
+                <img class="china-map" src="https://simplemaps.com/static/svg/country/cn/admin1/cn.svg" alt="中国省级行政区地图">
+              </div>
+              <div class="city-marker marker-wh" data-city="武汉" data-value="362" style="--x:65%;--y:57%;--dx:-88px;--dy:-5px"><span></span><div><small>武汉</small><strong>362</strong><em>点击查看项目</em></div></div>
+              <div class="city-marker marker-hf" data-city="合肥" data-value="128" style="--x:70%;--y:50%;--dx:34px;--dy:-28px"><span></span><div><small>合肥</small><strong>128</strong><em>点击查看项目</em></div></div>
+              <div class="city-marker marker-xn" data-city="咸宁" data-value="86" style="--x:64%;--y:63%;--dx:42px;--dy:12px"><span></span><div><small>咸宁</small><strong>86</strong><em>点击查看项目</em></div></div>
+              <div class="city-marker marker-cs" data-city="长沙" data-value="52" style="--x:61%;--y:69%;--dx:-72px;--dy:25px"><span></span><div><small>长沙</small><strong>52</strong><em>点击查看项目</em></div></div>
               <div class="map-summary"><small>全国业务布局</small><div><span><b>32</b>覆盖城市</span><span><b>628</b>在管项目</span></div></div>
+              <aside class="city-detail" id="cityDetail" aria-hidden="true">
+                <button class="detail-close" id="detailClose" aria-label="关闭项目详情">×</button>
+                <div class="detail-heading"><span id="detailCode">WH</span><div><small>城市项目中心</small><h3 id="detailCity">武汉</h3></div></div>
+                <div class="detail-kpis"><div><strong id="detailCount">362</strong><small>在管项目</small></div><div><strong id="detailArea">3,860</strong><small>服务面积 / 万㎡</small></div><div><strong id="detailStaff">1,286</strong><small>服务人员</small></div></div>
+                <div class="detail-section-title"><span>重点项目</span><em>点击项目查看状态</em></div>
+                <div class="project-list" id="projectList"></div>
+                <div class="project-status" id="projectStatus"><i></i><span>城市运营整体平稳</span><b>实时</b></div>
+              </aside>
             </div>
           </section>
 
