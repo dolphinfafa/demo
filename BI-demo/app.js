@@ -48,20 +48,55 @@ function updateClock() {
   document.querySelector('#clock').textContent = `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}:${parts.second}`;
 }
 
-function animateNumbers() {
-  document.querySelectorAll('[data-count]').forEach((el) => {
-    const target = Number(el.dataset.count);
-    const decimals = Number(el.dataset.decimals || 0);
-    const duration = 1200;
-    const startedAt = performance.now();
-    const tick = (now) => {
-      const progress = Math.min((now - startedAt) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const value = target * eased;
-      el.textContent = decimals ? value.toFixed(decimals) : numberFormatter.format(Math.round(value));
-      if (progress < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
+function animateNumberElement(el, options = {}) {
+  const textNode = [...el.childNodes].find((node) => node.nodeType === Node.TEXT_NODE && /\d/.test(node.nodeValue));
+  if (!textNode) return;
+  const source = options.targetText ?? textNode.nodeValue;
+  const match = source.match(/-?[\d,]+(?:\.\d+)?/);
+  if (!match) return;
+  const target = Number(match[0].replaceAll(',', ''));
+  const decimals = options.decimals ?? (match[0].split('.')[1]?.length || 0);
+  const prefix = source.slice(0, match.index);
+  const suffix = source.slice(match.index + match[0].length);
+  const duration = options.duration || 1300;
+  const delay = options.delay || 0;
+  const startedAt = performance.now() + delay;
+  el.classList.remove('number-pop');
+
+  const tick = (now) => {
+    if (now < startedAt) {
+      requestAnimationFrame(tick);
+      return;
+    }
+    const progress = Math.min((now - startedAt) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const value = target * eased;
+    const display = decimals
+      ? value.toLocaleString('zh-CN', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
+      : numberFormatter.format(Math.round(value));
+    textNode.nodeValue = `${prefix}${display}${suffix}`;
+    if (progress < 1) requestAnimationFrame(tick);
+    else el.classList.add('number-pop');
+  };
+  requestAnimationFrame(tick);
+}
+
+function animateNumbers(root = document) {
+  root.querySelectorAll('[data-count]').forEach((el, index) => {
+    animateNumberElement(el, {
+      targetText: el.dataset.count,
+      decimals: Number(el.dataset.decimals || 0),
+      delay: index * 70
+    });
+  });
+
+  const selectors = [
+    '.mini-stats strong', '.donut strong', '.response-grid strong',
+    '.progress-list label > b', '.city-marker strong', '.map-summary b',
+    '.quality-rings strong', '.growth-bars b', '.risk-gauge strong', '.risk-list b'
+  ].join(',');
+  root.querySelectorAll(selectors).forEach((el, index) => {
+    animateNumberElement(el, { delay: 180 + (index % 8) * 65 });
   });
 }
 
@@ -139,6 +174,9 @@ function openCityDetail(city, count) {
   cityDetail.setAttribute('aria-hidden', 'false');
   mapCanvas.classList.add('detail-open');
   bindProjectItems();
+  document.querySelectorAll('.detail-kpis strong').forEach((el, index) => {
+    animateNumberElement(el, { delay: 180 + index * 100, duration: 900 });
+  });
   showToast(`${city}项目详情已展开`);
 }
 
@@ -188,6 +226,35 @@ document.querySelector('#riskFilter').addEventListener('click', (event) => {
 
 document.querySelectorAll('.city-services button').forEach((button) => {
   button.addEventListener('click', () => showToast(`${button.querySelector('b').textContent}运行数据正常`));
+});
+
+document.querySelectorAll('.kpi').forEach((card) => {
+  card.tabIndex = 0;
+  const activate = () => {
+    document.querySelectorAll('.kpi').forEach((item) => item.classList.remove('selected'));
+    card.classList.add('selected');
+    const label = card.querySelector('small').textContent;
+    const value = `${card.querySelector('strong').textContent}${card.querySelector('em').textContent}`;
+    showToast(`${label}：${value} · ${card.querySelector('p').textContent}`);
+  };
+  card.addEventListener('click', activate);
+  card.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') activate();
+  });
+});
+
+document.querySelectorAll('.quality-rings > div').forEach((item) => {
+  item.addEventListener('click', () => {
+    const label = item.querySelector('span').textContent;
+    const value = item.querySelector('strong').textContent;
+    showToast(`${label} ${value} · 点击查看趋势分析`);
+  });
+});
+
+document.querySelectorAll('.progress-list label').forEach((item) => {
+  item.addEventListener('click', () => {
+    showToast(`${item.querySelector('span').textContent}：当前完成 ${item.querySelector('b').textContent}`);
+  });
 });
 
 updateClock();
